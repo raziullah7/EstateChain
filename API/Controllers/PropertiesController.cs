@@ -1,14 +1,22 @@
-﻿using Domain.Entities;
-using Infrastructure.Persistence;
+﻿using Application.Properties.Queries;
+using Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers;
 
-public class PropertiesController(EstateChainDbContext context) : BaseApiController
+public class PropertiesController : BaseApiController
 {
-    [HttpGet]
-    public ActionResult<IEnumerable<Property>> Get()
+    [HttpGet]   // "localhost/api/properties"
+    public async Task<ActionResult<List<Property>>> GetProperties()
     {
-        return context.Properties.ToList();
+        return await Mediator.Send(new GetPropertyList.Query());
     }
+
+    [HttpGet("{id}")]   // "localhost/api/properties/{id}"
+    public async Task<ActionResult<Property>> GetPropertyDetail(string id)
+    {
+        return await Mediator.Send(new GetPropertyDetails.Query{Id = id});
+    }
+
 }

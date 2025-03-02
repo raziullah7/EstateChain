@@ -1,3 +1,4 @@
+using Application.Properties.Queries;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,11 @@ builder.Services.AddControllers();
 // adding sqlite as db context
 builder.Services.AddDbContext<EstateChainDbContext>(opt => 
     opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"))
+);
+
+// adding Mediatr
+builder.Services.AddMediatR(opt => 
+    opt.RegisterServicesFromAssemblyContaining<GetPropertyList>()
 );
 
 // adding CORS
