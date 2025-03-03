@@ -1,4 +1,5 @@
-﻿using Application.Properties.Queries;
+﻿using Application.Properties.Commands;
+using Application.Properties.Queries;
 using Domain.Entities;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -19,4 +20,23 @@ public class PropertiesController : BaseApiController
         return await Mediator.Send(new GetPropertyDetails.Query{Id = id});
     }
 
+    [HttpPost]
+    public async Task<ActionResult<string>> PostProperty(Property property)
+    {
+        return await Mediator.Send(new CreateProperty.Command {Property = property});
+    }
+
+    [HttpPut]
+    public async Task<ActionResult> EditProperty(Property property)
+    {
+        await Mediator.Send(new EditProperty.Command{Property = property});
+        return NoContent();
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult> DeleteProperty(string id)
+    {
+        await Mediator.Send(new DeleteProperty.Command{Id = id});
+        return Ok();
+    }
 }

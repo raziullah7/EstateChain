@@ -1,3 +1,4 @@
+using Application.Core;
 using Application.Properties.Queries;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -17,6 +18,9 @@ builder.Services.AddDbContext<EstateChainDbContext>(opt =>
 builder.Services.AddMediatR(opt => 
     opt.RegisterServicesFromAssemblyContaining<GetPropertyList>()
 );
+
+// adding AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfiles).Assembly);
 
 // adding CORS
 builder.Services.AddCors();
