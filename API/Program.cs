@@ -28,7 +28,8 @@ builder.Services.AddCors();
 var app = builder.Build();
 
 // adding CORS to the pipeline
-app.UseCors(opt => opt.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors(opt => opt.AllowAnyHeader().AllowAnyMethod()
+    .WithOrigins("http://localhost:3000", "https://localhost:3000"));
 
 app.MapControllers();
 
