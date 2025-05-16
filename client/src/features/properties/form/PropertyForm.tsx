@@ -1,14 +1,17 @@
 import {Box, Button, Paper, TextField, Typography} from "@mui/material";
 import {FormEvent} from "react";
+import {useProperties} from "../../../lib/Hooks/useProperties.ts";
 
 type Props = {
     property?: Property;
     closeForm: () => void;
-    submitForm: (property: Property) => void;
 }
 
-export default function PropertyForm({property, closeForm, submitForm}: Props) {
-    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+export default function PropertyForm({property, closeForm}: Props) {
+    // using the custom hook to update the data in the API
+    const {updateProperty, createProperty} = useProperties();
+
+    const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
         // stop submission and reload of the page
         event.preventDefault();
 
@@ -20,9 +23,15 @@ export default function PropertyForm({property, closeForm, submitForm}: Props) {
         });
 
         // if the property is being Edited instead of being created
-        if (property) data.id = property.id;
+        if (property) {
+            data.id = property.id;
+            await updateProperty.mutateAsync(data as unknown as Property);
+            closeForm();
+        } else {
+            await createProperty.mutateAsync(data as unknown as Property);
+            closeForm();
+        }
 
-        submitForm(data as unknown as Property);
     }
 
     return (
@@ -40,7 +49,7 @@ export default function PropertyForm({property, closeForm, submitForm}: Props) {
                     <Button color="inherit" onClick={closeForm}>
                         Cancel
                     </Button>
-                    <Button color="success" variant="contained" type="submit">
+                    <Button color="success" variant="contained" type="submit" disabled={updateProperty.isPending || createProperty.isPending}>
                         Save
                     </Button>
                 </Box>

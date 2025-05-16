@@ -11,8 +11,6 @@ type Props = {
     editMode: boolean
     openForm: (id: string) => void
     closeForm: () => void
-    submitForm: (property: Property) => void
-    deleteProperty: (id: string) => void
 }
 
 export default function PropertyDashboard(
@@ -24,8 +22,6 @@ export default function PropertyDashboard(
         editMode,
         openForm,
         closeForm,
-        submitForm,
-        deleteProperty
     }: Props) {
     return (
         <Grid2 container spacing={3}>
@@ -33,14 +29,13 @@ export default function PropertyDashboard(
                 <PropertyList
                     properties={properties}
                     selectProperty={selectProperty}
-                    deleteProperty={deleteProperty}
                 />
             </Grid2>
             <Grid2 size={5}>
                 {// if selectedProperty exists and edit mode is off, then render <PropertyDetail/>
                     selectedProperty && !editMode &&
                     <PropertyDetail
-                        property={selectedProperty}
+                        selectedProperty={selectedProperty}
                         cancelSelectProperty={cancelSelectProperty}
                         openForm={openForm}
                     />
@@ -49,7 +44,6 @@ export default function PropertyDashboard(
                 {// if edit mode is on, then render <PropertyForm/>
                     editMode &&
                     <PropertyForm
-                        submitForm={submitForm}
                         closeForm={closeForm}
                         property={selectedProperty}
                     />

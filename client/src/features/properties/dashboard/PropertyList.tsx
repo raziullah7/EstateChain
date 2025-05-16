@@ -4,10 +4,9 @@ import PropertyCard from "./PropertyCard.tsx";
 type Props = {
     properties: Property[]
     selectProperty: (id: string) => void
-    deleteProperty: (id: string) => void
 }
 
-export default function PropertyList({properties, selectProperty, deleteProperty}: Props) {
+export default function PropertyList({properties, selectProperty}: Props) {
     return (
         <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 3}}>
             {properties.map(property => (
@@ -15,7 +14,6 @@ export default function PropertyList({properties, selectProperty, deleteProperty
                     key={property.id}
                     property={property}
                     selectProperty={selectProperty}
-                    deleteProperty={deleteProperty}
                 />
             ))}
         </Box>

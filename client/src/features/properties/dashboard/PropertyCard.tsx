@@ -1,12 +1,14 @@
 import {Box, Button, Card, CardActions, CardContent, Chip, Typography} from "@mui/material";
+import { useProperties } from "../../../lib/Hooks/useProperties";
 
 type Props = {
     property: Property;
     selectProperty: (id: string) => void
-    deleteProperty: (id: string) => void
 }
 
-export default function PropertyCard({property, selectProperty, deleteProperty}: Props) {
+export default function PropertyCard({property, selectProperty}: Props) {
+    const {deleteProperty} = useProperties();
+
     return (
         <Card sx={{borderRadius: 3, maxWidth: '410px', minWidth: '410px'}}>
             <CardContent>
@@ -24,7 +26,8 @@ export default function PropertyCard({property, selectProperty, deleteProperty}:
                         variant='contained'>View
                     </Button>
                     <Button
-                        onClick={() => deleteProperty(property.id)}
+                        onClick={() => deleteProperty.mutateAsync(property.id)}
+                        disabled={deleteProperty.isPending}
                         size='medium'
                         color='error'
                         variant='contained'>Delete

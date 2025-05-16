@@ -1,25 +1,20 @@
-import {useEffect, useState} from "react";
-import {Box, Container, CssBaseline} from "@mui/material";
-import axios from "axios";
+import {useState} from "react";
+import {Box, Container, CssBaseline, Typography} from "@mui/material";
 import NavBar from "./NavBar.tsx";
 import PropertyDashboard from "../../features/properties/dashboard/PropertyDashboard.tsx";
+import {useProperties} from "../../lib/Hooks/useProperties.ts";
 
 function App() {
-
-    const [properties, setProperties] = useState<Property[]>([]);
     const [selectedProperty, setSelectedProperty] = useState<Property | undefined>(undefined);
     // editMode: true means <PropertyForm/> is rendered
     // editMode: false means <PropertyForm/> is not rendered
     const [editMode, setEditMode] = useState(false);
-
-    useEffect(() => {
-        axios.get<Property[]>('https://localhost:5001/api/properties')
-            .then(res => setProperties(res.data));
-    }, []);
+    // doing the react-query call using useProperties() custom hook
+    const {properties, isPending} = useProperties();
 
     // handle selection of property
     const handleSelectProperty = (id: string) => {
-        setSelectedProperty(properties.find(x => x.id === id));
+        setSelectedProperty(properties!.find(x => x.id === id));
     }
 
     // handle cancellation of property
@@ -39,42 +34,25 @@ function App() {
         setEditMode(false);
     }
 
-    const handleSubmitForm = (property: Property) => {
-        if (property.id) { // edit property
-            setProperties(properties.map(
-                // if any property id matches with the passed property
-                // then override that property with the passed property
-                (x) => x.id === property.id ? property : x)
-            );
-        } else { // create property
-            const newProperty = { ...property, id: properties.length.toString() };
-            setSelectedProperty(newProperty);
-            setProperties([...properties, newProperty]);
-        }
-        // closes the <PropertyForm/>
-        setEditMode(false);
-    }
-
-    const handleDelete = (id: string) => {
-        setProperties(properties.filter(x => x.id !== id));
-    }
-
     return (
-        <Box sx={{backgroundColor: '#eee'}}>
-            <CssBaseline />
+        <Box sx={{backgroundColor: '#eee', minHeight: '100vh'}}>
+            <CssBaseline/>
             <NavBar openForm={handleOpenForm}/>
-            <Container maxWidth="xl" sx={{ marginTop: 3 }}>
-                <PropertyDashboard
-                    properties={properties}
-                    selectProperty={handleSelectProperty}
-                    cancelSelectProperty={handleCancelSelectProperty}
-                    selectedProperty={selectedProperty}
-                    editMode={editMode}
-                    openForm={handleOpenForm}
-                    closeForm={handleFormClose}
-                    submitForm={handleSubmitForm}
-                    deleteProperty={handleDelete}
-                />
+            <Container maxWidth="xl" sx={{marginTop: 3}}>
+                {
+                    (!properties || isPending) ?
+                        <Typography>Loading...</Typography> :
+                        <PropertyDashboard
+                            properties={properties}
+                            selectProperty={handleSelectProperty}
+                            cancelSelectProperty={handleCancelSelectProperty}
+                            selectedProperty={selectedProperty}
+                            editMode={editMode}
+                            openForm={handleOpenForm}
+                            closeForm={handleFormClose}
+                        />
+                }
+
             </Container>
         </Box>
     )

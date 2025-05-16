@@ -1,12 +1,15 @@
 import { Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
+import {useProperties} from "../../../lib/Hooks/useProperties.ts";
 
 type Props = {
-    property: Property;
+    selectedProperty: Property;
     cancelSelectProperty: () => void;
     openForm: (id: string) => void;
 }
 
-export default function PropertyDetail({property, cancelSelectProperty, openForm}: Props) {
+export default function PropertyDetail({selectedProperty, cancelSelectProperty, openForm}: Props) {
+    const {properties} = useProperties();
+    const property = properties!.find(x => x.id === selectedProperty.id)!;
   return (
     <Card sx={{borderRadius: 3}}>
         <CardMedia
