@@ -1,19 +1,20 @@
-import {Box} from "@mui/material";
+import {Box, Typography} from "@mui/material";
 import PropertyCard from "./PropertyCard.tsx";
+import { useProperties } from "../../../lib/Hooks/useProperties.ts";
 
-type Props = {
-    properties: Property[]
-    selectProperty: (id: string) => void
-}
+export default function PropertyList() {
+    // doing the react-query call using useProperties() custom hook
+    const {properties, isPending} = useProperties();
 
-export default function PropertyList({properties, selectProperty}: Props) {
+    if (!properties || isPending) {
+        return <Typography>Loading...</Typography>
+    }
     return (
         <Box sx={{display: 'flex', flexWrap: 'wrap', gap: 3}}>
             {properties.map(property => (
                 <PropertyCard
                     key={property.id}
                     property={property}
-                    selectProperty={selectProperty}
                 />
             ))}
         </Box>
